@@ -23,10 +23,10 @@
   }
   /* Render & toggle sections */
   const sections = {
+    blocks: document.querySelectorAll('section'),
     toggle: function (route) {
-      const blocks = document.querySelectorAll('section')
       let active = document.querySelector(`${route}`)
-      blocks.forEach((block) => {
+      this.blocks.forEach((block) => {
         block.classList.remove('active')
       })
       active.classList.add('active')
