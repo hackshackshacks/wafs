@@ -4,8 +4,12 @@
     init: function () {
       routes.init()
       sections.toggle(window.location.hash)
-      document.querySelector('a').addEventListener((e) => {
-        e.preventdefault()
+      document.querySelectorAll('nav a').forEach((link) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault() // prevent jump
+          sections.toggle(e.target.hash)
+          window.location.hash = e.target.hash // set url to match hash
+        })
       })
     }
   }
@@ -21,7 +25,7 @@
   const sections = {
     toggle: function (route) {
       const blocks = document.querySelectorAll('section')
-      let active = document.querySelector(route)
+      let active = document.querySelector(`${route}`)
       blocks.forEach((block) => {
         block.classList.remove('active')
       })
