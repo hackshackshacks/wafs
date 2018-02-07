@@ -17,7 +17,7 @@
   /* Render & toggle sections */
   const sections = {
     toggle: function (route) {
-      let blocks = document.querySelectorAll('section')
+      const blocks = document.querySelectorAll('section')
       let active = document.querySelector(`.${route}`)
       blocks.forEach((block) => {
         block.classList.remove('active')
