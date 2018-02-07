@@ -22,19 +22,15 @@
     }
   }
   /* Render & toggle sections */
-  var sections = {
-    sections: app.rootElement.querySelectorAll("body>section"),
-    toggle: function(route) {
-      for (let i = 0; i < this.sections.length; i++) {
-        this.sections[i].classList.remove("active");
-        // Checking if the id is the same as the route
-        if (this.sections[i].id == route) {
-          this.sections[i].classList.add("active");
-        }
-      }
+  const sections = {
+    blocks: document.querySelectorAll('section'),
+    toggle: function (route) {
+      let active = document.querySelector(`${route}`)
+      this.blocks.forEach((block) => {
+        block.classList.remove('active')
+      })
+      active.classList.add('active')
     }
   }
-
-  // Start the Aplication
-  app.init();
+  app.init()
 })()
