@@ -25,6 +25,8 @@ a {
   padding: 1em;
   box-sizing: border-box;
   text-align: center;
+  text-decoration: none;
+  color: #000;
 }
 section {
   width: 100%;
