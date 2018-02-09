@@ -1,4 +1,13 @@
 (function () {
+  /* Helper functions */
+  const help = {
+    qs: function (el) {
+      return document.querySelector(el)
+    },
+    qsa: function (el) {
+      return document.querySelectorAll(el)
+    }
+  }
   /* Initialize application */
   const app = {
     init: function () {
@@ -10,7 +19,7 @@
       sections.toggle(window.location.hash)
     },
     handleEvents: function () { 
-      document.querySelectorAll('nav a').forEach((link) => {
+      help.qsa('nav a').forEach((link) => {
         link.addEventListener('click', (e) => {
           e.preventDefault() // prevent jump
           sections.toggle(e.target.hash)
@@ -29,9 +38,9 @@
   }
   /* Render & toggle sections */
   const sections = {
-    blocks: document.querySelectorAll('section'),
+    blocks: help.qsa('section'),
     toggle: function (route) {
-      let active = document.querySelector(`${route}`)
+      let active = help.qs(`${route}`)
       this.blocks.forEach((block) => {
         block.classList.remove('active')
       })
