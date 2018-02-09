@@ -3,7 +3,13 @@
   const app = {
     init: function () {
       routes.init()
+      this.handleEvents()
+      this.initPage()
+    },
+    initPage: function () {
       sections.toggle(window.location.hash)
+    },
+    handleEvents: function () { 
       document.querySelectorAll('nav a').forEach((link) => {
         link.addEventListener('click', (e) => {
           e.preventDefault() // prevent jump
@@ -33,4 +39,4 @@
     }
   }
   app.init()
-})()
+}) ()
