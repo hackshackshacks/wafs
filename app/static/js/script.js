@@ -1,10 +1,10 @@
 (function () {
   /* Helper functions */
   const h = {
-    qs: function (el) {
+    qs: (el) => {
       return document.querySelector(el)
     },
-    qsa: function (el) {
+    qsa: (el) => {
       return document.querySelectorAll(el)
     }
   }
@@ -12,40 +12,44 @@
   const app = {
     init: function () {
       routes.init()
-      this.handleEvents()
       this.initPage()
     },
-    initPage: function () {
+    initPage: () => {
       sections.toggle(window.location.hash)
-    },
-    handleEvents: function () { 
-      h.qsa('nav a').forEach((link) => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault() // prevent jump
-          sections.toggle(e.target.hash)
-          window.location.hash = e.target.hash // set url to match hash
-        })
-      })
     }
   }
   /* Handle routes */
   const routes = {
-    init: function () {
+    init: () => {
       window.addEventListener('hashchange', () => {
         sections.toggle(window.location.hash)
+        api.singlePoke(Math.floor(Math.random() * 100 + 1)).then((result) => {
+          console.log(JSON.parse(result).name)
+        })
       })
     }
   }
   /* Render & toggle sections */
   const sections = {
     blocks: h.qsa('section'),
-    toggle: function (route) {
+    toggle: (route) => {
       let active = h.qs(`${route}`)
-      this.blocks.forEach((block) => {
+      sections.blocks.forEach((block)=> {
         block.classList.remove('active')
       })
       active.classList.add('active')
     }
   }
+  const api = {
+    singlePoke: (i) => {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        xhr.open("GET", `https://pokeapi.co/api/v2/pokemon/${i}/`)
+        xhr.onload = () => resolve(xhr.responseText)
+        xhr.onerror = () => reject(xhr.statusText)
+        xhr.send()
+      })
+    }
+  }
   app.init()
-}) ()
+})()
