@@ -87,7 +87,7 @@
       })
     },
     loadSingle: () => {
-      const load = h.qs('.imgWrap img:nth-child(1)')
+      const load = h.qs('.imgWrap img:nth-of-type(1)')
       load.classList.remove('hidden')
       rnd = Math.floor(Math.random() * 100 + 1)
       api.getList().then((result) => {
