@@ -1,3 +1,8 @@
+@font-face {
+  font-family: poke;
+  src: url('../fonts/pokemon_solid.ttf')
+}
+
 body {
   display: grid;
   height: 100vh;
@@ -57,7 +62,7 @@ section {
   display: grid;
   place-items: center center;
 }
-.imgWrap img:nth-child(2) {
+.imgWrap img:nth-of-type(2) {
   filter: grayscale(100%) brightness(.2) invert(50%) sepia(100%) saturate(100) hue-rotate(200deg) contrast(200%);
   width: 100%;
   transition: filter 300ms;
@@ -65,10 +70,10 @@ section {
 .singleName {
   display: none;
 }
-.revealed .imgWrap img:nth-child(2) {
+.revealed .imgWrap img:nth-of-type(2) {
   filter: none;
 }
-.imgWrap img:nth-child(1) {
+.imgWrap img:nth-of-type(1) {
   max-width: 4rem;
   position: absolute;
   top: 50%;
@@ -83,7 +88,15 @@ section {
 .hidden {
   display: none;
 }
-
+output {
+  font-family: poke;
+  /* text-shadow: -10px 0 #356abd, 0 10px #356abd, 10px 0 #356abd, 0 -10px #356abd; */
+  font-size: 10em;
+  color: #ffce00;
+  -webkit-text-stroke: 10px #356abd;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
 @keyframes rotate {
   from {
     transform: rotate(0);
