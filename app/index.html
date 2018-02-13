@@ -11,34 +11,33 @@
     <nav>
       <ul>
         <li>
-          <a href="#start">Who is this pokemon??</a>
+          <a href="#game">Who is this pokemon??</a>
         </li>
         <li>
-          <a href="#list">List of pokemons</a>
+          <a href="#overview">List of pokemons</a>
         </li>
       </ul>
     </nav>
-    <section class="whoIs active" id="start">
+    <section class="whoIs active" id="game">
       <output id="counter">10</output>
-      <button id="randomize">New pokemon</button>
       <div class="imgWrap">
-        <img src="http://www.freeiconspng.com/uploads/load-icon-png-10.png" class="hidden">
+        <img src="http://www.freeiconspng.com/uploads/load-icon-png-10.png" id="loader">
         <img src="" alt="" id="img">
       </div>
-      <form>
+      <form class="userGuess">
           <input type="text" id="guess">
-          <input type="submit">
+          <input type="submit" id="submit">
       </form>
-      <h1 id="random" class="singleName">It's <span class="name"></span>!</h1>
-      <h1 class="super">Super!</h1>
+      <button id="newGame">New game</button>
+      <h1 id="pokemonName"></h1>
+      <h1 id="message">Super!</h1>
+      <h1 id="score"></h1>
     </section>
-    <section id="list">
+    <section id="overview">
       <h1>Pokemons</h1>
-      <ul id="pokemons">
-        <li class="name"></li>
+      <ul id="pokemonList">
       </ul>
     </section>
-    <script src="static/js/transparency.js"></script>
     <script src="static/js/routie.js"></script>
     <script src="static/js/script.js"></script>
   </body>

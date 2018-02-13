@@ -21,46 +21,17 @@
           location.hash = this.hash
         })
       })
-      h.qs('#randomize').addEventListener('click', () => {
-        app.reset()
-      })
-    },
-    counter: (name) => {
-      const el = h.qs('#counter')
-      const input = h.qs('#guess')
-      const wl = h.qs('.super')
-      let time = 10
-      let countdown = setInterval(() => {
-        time--
-        el.innerHTML = time
-        if (time <= 0) {
-          clearInterval(countdown)
-          sections.blocks[0].classList.add('revealed')
-          if (input.value === name) {
-            wl.innerHTML = 'You win!'
-          } else {
-            wl.innerHTML = 'You lose!'
-          }
-        }
-      }, 1000)
-    },
-    reset: () => {
-      sections.blocks[0].classList.remove('revealed')
-      api.loadSingle()
     }
   }
   /* Handle routes */
   const routes = {
     init: function () {
-      api.loadSingle()
       routie({
-        'start': () => {
-          sections.toggle(window.location.hash)
-          api.loadSingle()
+        'game': () => {
+          game.init()
         },
-        'list': () => {
-          sections.toggle(window.location.hash)
-          api.loadList()
+        'overview': () => {
+          overview.init()
         }
       })
     }
@@ -76,43 +47,114 @@
       active.classList.add('active')
     }
   }
+  const game = {
+    els: {
+      load: h.qs('#loader'),
+      image: h.qs('#img'),
+      output: h.qs('#counter'), // counter output element
+      input: h.qs('#guess'), // user guess input element
+      submit: h.qs('#submit'),
+      message: h.qs('#message'), // win or lose message element
+      name: h.qs('#pokemonName'),
+      score: h.qs('#score'),
+      newGame: h.qs('#newGame')
+    },
+    count: false,
+    maxTime: 10,
+    score: 0,
+    pokemons: {},
+    currentPokemon: {},
+    init: () => {
+      sections.toggle(window.location.hash)
+      game.handleEvents()
+      game.loadPokemons()
+    },
+    handleEvents: () => {
+      game.els.submit.addEventListener('click', game.validate)
+      game.els.newGame.addEventListener('click', () => {
+        game.reset()
+        game.start()
+      })
+    },
+    loadPokemons: () => {
+      api.getPokemons(151).then((result) => {
+        let data = JSON.parse(result)
+        game.pokemons = data.results
+        game.start()
+      })
+    },
+    start: () => {
+      sections.blocks[0].classList.remove('revealed')
+      let rnd = Math.floor(Math.random() * game.pokemons.length)
+      game.currentPokemon = {
+        name: game.pokemons[rnd].name,
+        url: game.pokemons[rnd].url,
+        index: rnd
+      }
+      game.els.image.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${rnd + 1}.png`
+      game.els.load.classList.add('hidden')
+      game.countdown()
+    },
+    countdown: () => {
+      let time
+      time = game.maxTime
+      if (!game.count) {
+        game.count = setInterval(() => { // countdown function
+          time--
+          game.els.output.innerHTML = time
+          if (time <= 0) {
+            game.validate()
+          }
+        }, 1000)
+      }
+    },
+    validate: () => {
+      game.reset()
+      sections.blocks[0].classList.add('revealed')
+      game.els.name.innerHTML = `It's ${game.currentPokemon.name}`
+      if (game.els.input.value === game.currentPokemon.name) {
+        game.els.message.innerHTML = 'Nice!'
+        game.score++
+        game.els.score.innerHTML = `Score: ${game.score}`
+      } else {
+        game.els.message.innerHTML = 'Too bad!'
+      }
+    },
+    reset: () => {
+      clearInterval(game.count)
+      game.count = false
+      game.els.output.innerHTML = game.maxTime
+    }
+  }
+  const overview = {
+    init: () => {
+      sections.toggle(window.location.hash)
+      overview.loadPokemons()
+    },
+    pokemons: {},
+    loadPokemons: () => {
+      api.getPokemons(20).then((result) => {
+        let data = JSON.parse(result)
+        overview.pokemons = data.results
+        overview.fillList()
+      })
+    },
+    fillList: () => {
+      let html
+      overview.pokemons.forEach((pokemon, i) => {
+        html += `<li><a href="#${i}">${pokemon.name}</a></li>`
+      })
+      h.qs('#pokemonList').innerHTML = html
+    }
+  }
   const api = {
-    getPoke: (i) => {
+    getPokemons: (limit) => {
       return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest()
-        xhr.open("GET", `https://pokeapi.co/api/v2/pokemon/${i}`)
+        xhr.open('get', `https://pokeapi.co/api/v2/pokemon/?limit=${limit}`)
         xhr.onload = () => resolve(xhr.responseText)
         xhr.onerror = () => reject(xhr.statusText)
         xhr.send()
-      })
-    },
-    loadSingle: () => {
-      const load = h.qs('.imgWrap img:nth-of-type(1)')
-      load.classList.remove('hidden')
-      rnd = Math.floor(Math.random() * 100 + 1)
-      api.getList().then((result) => {
-        let data = JSON.parse(result)
-        let pokemon = data.results[rnd - 1]
-        h.qs('#img').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${rnd}.png`
-        load.classList.add('hidden')
-        Transparency.render(h.qs('#random'), pokemon)
-        app.counter(pokemon.name)
-      })
-    },
-    getList: () => {
-      return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest()
-        xhr.open("GET", `https://pokeapi.co/api/v2/pokemon/?limit=100`)
-        xhr.onload = () => resolve(xhr.responseText)
-        xhr.onerror = () => reject(xhr.statusText)
-        xhr.send()
-      })
-    },
-    loadList: () => {
-      api.getList().then((result) => {
-        let data = JSON.parse(result)
-        let pokemon = data.results
-        Transparency.render(document.getElementById('pokemons'), pokemon)
       })
     }
   }
