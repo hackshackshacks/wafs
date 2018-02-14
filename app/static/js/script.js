@@ -142,8 +142,8 @@
         overview.loadPokemons(overview.currentAmount)
       })
     },
-    startAmount: 20,
-    currentAmount: 20,
+    startAmount: 5,
+    currentAmount: 5,
     pokemons: {},
     loadPokemons: (limit) => {
       overview.els.loader.classList.remove('hidden')
@@ -155,9 +155,12 @@
       })
     },
     fillList: () => {
-      let list = overview.pokemons.map(pokemon => `
+      let list = overview.pokemons.map((pokemon, i) => `
         <li>
-          <a href="#">${pokemon.name}</a>
+          <a href="#${i}">
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${i + 1}.png">
+            <p>${pokemon.name}</p>
+          </a>
         </li>
       `).join('')
       overview.els.list.innerHTML = list
