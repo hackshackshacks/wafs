@@ -39,7 +39,7 @@
       })
     }
   }
-  /* Render & toggle sections */
+  /* Toggle sections */
   const sections = {
     blocks: h.qsa('section'),
     toggle: (route) => {
@@ -56,7 +56,7 @@
       image: h.qs('#img'),
       output: h.qs('#counter'), // counter output element
       input: h.qs('#guess'), // user guess input element
-      submit: h.qs('#submit'),
+      submit: h.qs('#submitGuess'),
       message: h.qs('#message'), // win or lose message element
       name: h.qs('#pokemonName'),
       score: h.qs('#score'),
@@ -138,22 +138,44 @@
     els: {
       list: h.qs('#pokemonList'),
       load: h.qs('#loadMore'),
-      loader: h.qs('#listLoader')
+      loader: h.qs('#listLoader'),
+      search: h.qs('#search'),
+      submit: h.qs('#submitSearch')
     },
     handleEvents: () => {
       overview.els.load.addEventListener('click', () => {
         overview.loadPokemons(overview.currentAmount)
       })
+      overview.els.search.addEventListener('change', () => {
+        overview.search() // load pokemons with filter
+      })
     },
-    startAmount: 5,
-    currentAmount: 5,
+    startAmount: 6,
+    currentAmount: 6,
     pokemons: {},
-    loadPokemons: () => {
+    loadPokemons: (limit) => {
       overview.els.loader.classList.remove('hidden')
-      api.getPokemons(5).then((result) => {
+      api.getPokemons(limit).then((result) => {
         let data = JSON.parse(result)
         overview.els.loader.classList.add('hidden')
         overview.pokemons = data.objects
+        overview.pokemons.shift()
+        overview.render()
+      })
+    },
+    search: () => {
+      overview.els.loader.classList.remove('hidden')
+      api.getPokemons(151).then((result) => {
+        let data = JSON.parse(result)
+        overview.els.loader.classList.add('hidden')
+        let value = overview.els.search.value
+        function filterbyname (item) {
+          if (item.pokemon.name.includes(value)) {
+            return item
+          }
+        }
+        overview.pokemons.shift()
+        overview.pokemons = data.objects.filter(filterbyname)
         overview.render()
       })
     },
@@ -161,8 +183,8 @@
       let list = overview.pokemons.map((pokemon, i) => `
         <li>
           <a href="#overview/${i + 1}">
-            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${i + 1}.png">
-            <p>${pokemon.name}</p>
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id - 1}.png">
+            <p>${pokemon.pokemon.name}</p>
           </a>
         </li>
       `).join('')
