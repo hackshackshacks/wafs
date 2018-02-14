@@ -49,7 +49,7 @@
   }
   const game = {
     els: {
-      load: h.qs('#loader'),
+      load: h.qs('#gameLoader'),
       image: h.qs('#img'),
       output: h.qs('#counter'), // counter output element
       input: h.qs('#guess'), // user guess input element
@@ -129,22 +129,39 @@
   const overview = {
     init: () => {
       sections.toggle(window.location.hash)
-      overview.loadPokemons()
+      overview.handleEvents()
+      overview.loadPokemons(overview.startAmount)
     },
+    els: {
+      list: h.qs('#pokemonList'),
+      load: h.qs('#loadMore'),
+      loader: h.qs('#listLoader')
+    },
+    handleEvents: () => {
+      overview.els.load.addEventListener('click', () => {
+        overview.loadPokemons(overview.currentAmount)
+      })
+    },
+    startAmount: 20,
+    currentAmount: 20,
     pokemons: {},
-    loadPokemons: () => {
-      api.getPokemons(20).then((result) => {
+    loadPokemons: (limit) => {
+      overview.els.loader.classList.remove('hidden')
+      api.getPokemons(limit).then((result) => {
         let data = JSON.parse(result)
         overview.pokemons = data.results
         overview.fillList()
+        overview.els.loader.classList.add('hidden')
       })
     },
     fillList: () => {
-      let html
-      overview.pokemons.forEach((pokemon, i) => {
-        html += `<li><a href="#${i}">${pokemon.name}</a></li>`
-      })
-      h.qs('#pokemonList').innerHTML = html
+      let list = overview.pokemons.map(pokemon => `
+        <li>
+          <a href="#">${pokemon.name}</a>
+        </li>
+      `).join('')
+      overview.els.list.innerHTML = list
+      overview.currentAmount += overview.startAmount
     }
   }
   const api = {
