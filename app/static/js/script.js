@@ -164,10 +164,12 @@
       })
     },
     search: () => {
+      detail.els.list.classList.add('hidden')
       overview.els.loader.classList.remove('hidden')
       api.getPokemons(151).then((result) => {
         let data = JSON.parse(result)
         overview.els.loader.classList.add('hidden')
+        detail.els.list.classList.remove('hidden')
         let value = overview.els.search.value
         function filterbyname (item) {
           if (item.pokemon.name.includes(value)) {
@@ -182,7 +184,7 @@
     render: () => {
       let list = overview.pokemons.map((pokemon, i) => `
         <li>
-          <a href="#overview/${i + 1}">
+          <a href="#overview/${pokemon.id - 1}">
             <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id - 1}.png">
             <p>${pokemon.pokemon.name}</p>
           </a>
