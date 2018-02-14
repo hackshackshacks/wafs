@@ -32,6 +32,9 @@
         },
         'overview': () => {
           overview.init()
+        },
+        'overview/:pokemon?': (i) => {
+          detail.init(Number(i) + 1)
         }
       })
     }
@@ -79,7 +82,7 @@
     loadPokemons: () => {
       api.getPokemons(151).then((result) => {
         let data = JSON.parse(result)
-        game.pokemons = data.results
+        game.pokemons = data.objects
         game.start()
       })
     },
@@ -87,11 +90,11 @@
       sections.blocks[0].classList.remove('revealed')
       let rnd = Math.floor(Math.random() * game.pokemons.length)
       game.currentPokemon = {
-        name: game.pokemons[rnd].name,
+        name: game.pokemons[rnd].pokemon.name,
         url: game.pokemons[rnd].url,
         index: rnd
       }
-      game.els.image.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${rnd + 1}.png`
+      game.els.image.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${rnd}.png`
       game.els.load.classList.add('hidden')
       game.countdown()
     },
@@ -145,19 +148,19 @@
     startAmount: 5,
     currentAmount: 5,
     pokemons: {},
-    loadPokemons: (limit) => {
+    loadPokemons: () => {
       overview.els.loader.classList.remove('hidden')
-      api.getPokemons(limit).then((result) => {
+      api.getPokemons(5).then((result) => {
         let data = JSON.parse(result)
-        overview.pokemons = data.results
-        overview.fillList()
         overview.els.loader.classList.add('hidden')
+        overview.pokemons = data.objects
+        overview.render()
       })
     },
-    fillList: () => {
+    render: () => {
       let list = overview.pokemons.map((pokemon, i) => `
         <li>
-          <a href="#${i}">
+          <a href="#overview/${i + 1}">
             <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${i + 1}.png">
             <p>${pokemon.name}</p>
           </a>
@@ -167,11 +170,52 @@
       overview.currentAmount += overview.startAmount
     }
   }
+  const detail = {
+    init: (pokemon) => {
+      sections.toggle('#detail')
+      detail.loadPokemon(pokemon)
+    },
+    els: {
+      list: h.qs('#detailList'),
+      loader: h.qs('#detailLoader')
+    },
+    pokemon: {},
+    loadPokemon: (index) => {
+      detail.els.loader.classList.remove('hidden')
+      detail.els.list.classList.add('hidden')
+      api.getPokemon(index).then((result) => {
+        let data = JSON.parse(result)
+        detail.pokemon = data
+        detail.render()
+        detail.els.loader.classList.add('hidden')
+        detail.els.list.classList.remove('hidden')
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    render: () => {
+      let info = `
+        <li>Name: ${detail.pokemon.pokemon.name}</li>
+        <li>Id: ${detail.pokemon.id - 1}</li>
+        <li><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${detail.pokemon.id - 1}.png"></li>
+      `
+      detail.els.list.innerHTML = info
+    }
+  }
   const api = {
     getPokemons: (limit) => {
       return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest()
-        xhr.open('get', `https://pokeapi.co/api/v2/pokemon/?limit=${limit}`)
+        xhr.open('get', `https://pokeapi.co/api/v1/sprite/?limit=${limit}`)
+        xhr.onload = () => resolve(xhr.responseText)
+        xhr.onerror = () => reject(xhr.statusText)
+        xhr.send()
+      })
+    },
+    getPokemon: (index) => {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        xhr.open('get', `https://pokeapi.co/api/v1/sprite/${index}/`)
         xhr.onload = () => resolve(xhr.responseText)
         xhr.onerror = () => reject(xhr.statusText)
         xhr.send()
