@@ -98,6 +98,8 @@
       }
       game.els.image.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${rnd + 1}.png`
       game.els.load.classList.add('hidden')
+      game.els.input.classList.remove('hidden')
+      game.els.submit.classList.remove('hidden')
       game.countdown()
     },
     countdown: () => {
@@ -117,6 +119,8 @@
       game.reset()
       sections.blocks[0].classList.add('revealed')
       game.els.name.innerHTML = `It's ${game.currentPokemon.name}`
+      game.els.input.classList.add('hidden')
+      game.els.submit.classList.add('hidden')
       if (game.els.input.value === game.currentPokemon.name) {
         game.els.message.innerHTML = 'Nice!'
         game.score++
