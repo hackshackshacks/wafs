@@ -65,7 +65,7 @@
     count: false,
     maxTime: 10,
     score: 0,
-    pokemons: {},
+    pokemons: [],
     currentPokemon: {},
     init: () => {
       sections.toggle(window.location.hash)
@@ -80,9 +80,10 @@
       })
     },
     loadPokemons: () => {
-      api.getPokemons(151).then((result) => {
+      api.getPokemons(151, 0).then((result) => {
         let data = JSON.parse(result)
-        game.pokemons = data.objects
+        game.pokemons = data.results
+        console.log(data.results)
         game.start()
       })
     },
@@ -90,11 +91,11 @@
       sections.blocks[0].classList.remove('revealed')
       let rnd = Math.floor(Math.random() * game.pokemons.length)
       game.currentPokemon = {
-        name: game.pokemons[rnd].pokemon.name,
+        name: game.pokemons[rnd].name,
         url: game.pokemons[rnd].url,
         index: rnd
       }
-      game.els.image.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${rnd}.png`
+      game.els.image.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${rnd + 1}.png`
       game.els.load.classList.add('hidden')
       game.countdown()
     },
