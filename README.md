@@ -1,6 +1,9 @@
 # wafs
 The course repo for 'Web App From Scratch'
 
+ToDo:
+- [ ] Add different generations of pokemon
+- [ ] Add data to local storage to deal with api failure
 Link naar week 1: https://hackshackshacks.github.io/wafs/app
 
 ## Advantages and disadvantages of JavaScript libraries/frameworks
