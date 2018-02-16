@@ -1,7 +1,7 @@
 # wafs
 The course repo for 'Web App From Scratch'
 
-Link naar week 1: https://hackshackshacks.github.io/wafs/index.html
+Link naar week 1: https://hackshackshacks.github.io/wafs/app
 
 ## Advantages and disadvantages of JavaScript libraries/frameworks
 Voordelen:
