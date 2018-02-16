@@ -6,6 +6,9 @@
     },
     qsa: (el) => {
       return document.querySelectorAll(el)
+    },
+    capitalizeFirst: (string) => {
+      return string.charAt(0).toUpperCase() + string.slice(1)
     }
   }
   /* Initialize application */
@@ -35,6 +38,12 @@
         },
         'overview/:pokemon?': (i) => {
           detail.init(Number(i) + 1)
+        },
+        '': () => {
+          routie('game')
+        },
+        '*': () => {
+          routie('game')
         }
       })
     }
@@ -83,7 +92,6 @@
       api.getPokemons(151, 0).then((result) => {
         let data = JSON.parse(result)
         game.pokemons = data.results
-        console.log(data.results)
         game.start()
       })
     },
@@ -91,13 +99,15 @@
       sections.blocks[0].classList.remove('revealed')
       let rnd = Math.floor(Math.random() * game.pokemons.length)
       game.currentPokemon = {
-        name: game.pokemons[rnd].name,
+        name: h.capitalizeFirst(game.pokemons[rnd].name),
         url: game.pokemons[rnd].url,
         index: rnd
       }
       game.els.image.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${rnd + 1}.png`
       game.els.load.classList.add('hidden')
       game.countdown()
+      let sound = new Audio("../app/static/assets/sounds/pokemon_sound.mp3") // because spamming is fun
+      sound.play()
     },
     countdown: () => {
       let time
