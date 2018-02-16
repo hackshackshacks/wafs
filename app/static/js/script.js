@@ -15,6 +15,7 @@
       this.handleEvents()
     },
     handleEvents: () => {
+      location.hash = '#game'
       h.qsa('nav a').forEach(function (element) {
         element.addEventListener('click', function (event) {
           event.preventDefault()
