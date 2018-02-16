@@ -144,22 +144,28 @@
     },
     handleEvents: () => {
       overview.els.load.addEventListener('click', () => {
-        overview.loadPokemons(overview.currentAmount)
+        overview.loadPokemons(overview.startAmount, overview.offset)
       })
       overview.els.search.addEventListener('change', () => {
         overview.search() // load pokemons with filter
       })
     },
-    startAmount: 6,
-    currentAmount: 6,
-    pokemons: {},
-    loadPokemons: (limit) => {
+    startAmount: 5,
+    offset: 0,
+    pokemons: [],
+    loadPokemons: (limit, offset) => {
       overview.els.loader.classList.remove('hidden')
-      api.getPokemons(limit).then((result) => {
+      api.getPokemons(limit, offset).then((result) => {
         let data = JSON.parse(result)
         overview.els.loader.classList.add('hidden')
-        overview.pokemons = data.objects
-        overview.pokemons.shift()
+        data.results.forEach((item, i) => {
+          let obj = {
+            id: overview.offset + i,
+            name: item.name
+          }
+          overview.pokemons.push(obj)
+        })
+        overview.offset += overview.startAmount
         overview.render()
       })
     },
@@ -167,26 +173,30 @@
       detail.els.list.classList.add('hidden')
       overview.els.loader.classList.remove('hidden')
       api.getPokemons(151).then((result) => {
+        overview.pokemons = []
         let data = JSON.parse(result)
         overview.els.loader.classList.add('hidden')
         detail.els.list.classList.remove('hidden')
         let value = overview.els.search.value
-        function filterbyname (item) {
-          if (item.pokemon.name.includes(value)) {
-            return item
+        function filterbyname (item, i) {
+          if (item.name.includes(value)) {
+            let obj = {
+              id: i,
+              name: item.name
+            }
+            overview.pokemons.push(obj)
           }
         }
-        overview.pokemons.shift()
-        overview.pokemons = data.objects.filter(filterbyname)
+        data.results.filter(filterbyname)
         overview.render()
       })
     },
     render: () => {
       let list = overview.pokemons.map((pokemon, i) => `
         <li>
-          <a href="#overview/${pokemon.id - 1}">
-            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id - 1}.png">
-            <p>${pokemon.pokemon.name}</p>
+          <a href="#overview/${pokemon.id + 1}">
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id + 1}.png">
+            <p>${pokemon.name}</p>
           </a>
         </li>
       `).join('')
@@ -227,10 +237,10 @@
     }
   }
   const api = {
-    getPokemons: (limit) => {
+    getPokemons: (amount, offset) => {
       return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest()
-        xhr.open('get', `https://pokeapi.co/api/v1/sprite/?limit=${limit}`)
+        xhr.open('get', `https://pokeapi.co/api/v2/pokemon/?limit=${amount}&offset=${offset}`)
         xhr.onload = () => resolve(xhr.responseText)
         xhr.onerror = () => reject(xhr.statusText)
         xhr.send()
