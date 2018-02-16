@@ -28,6 +28,13 @@ section {
   display: none;
   box-sizing: border-box;
 }
+ h1 {
+   font-family: poke;
+   color: #ffce00;
+   font-size: 5em;
+  -webkit-text-stroke: 3px #356abd;
+  transform: translatey(-10rem);
+ }
 .whoIs {
   background: url("../images/pokebg.jpg");
   background-size: cover;
