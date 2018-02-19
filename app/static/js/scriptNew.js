@@ -7,7 +7,7 @@
     },
     init: function () {
       this.pokemons = []
-      this.activeGen = [0, 151]
+      this.activeGen = [0, 151, 0]
       routes.init()
       this.handleEvents()
       this.getPokemons()
@@ -38,20 +38,27 @@
       game.elements.load.classList.remove('hidden')
       pokedex.elements.loader.classList.remove('hidden')
       game.elements.newGame.disabled = true
-      api.loadGeneration(this.activeGen)
-      .then((result) => {
+      if (!window.localStorage.getItem(`pokemons${this.activeGen[2]}`)) { // get local data if available
+        api.loadGeneration(this.activeGen)
+        .then((result) => {
+          game.elements.newGame.disabled = false
+          this.storePokemons(JSON.parse(result).results, false)
+        })
+        .then(() => {
+          game.elements.load.classList.add('hidden')
+          pokedex.elements.loader.classList.add('hidden')
+        })
+      } else {
         game.elements.newGame.disabled = false
-        this.storePokemons(JSON.parse(result).results)
-        // window.localStorage.setItem('pokemons', result.results) // Get data and store locally
-      })
-      .then(() => {
         game.elements.load.classList.add('hidden')
         pokedex.elements.loader.classList.add('hidden')
-      })
-      // }
+        this.storePokemons(JSON.parse(window.localStorage.getItem(`pokemons${this.activeGen[2]}`)), true)
+      }
     },
-    storePokemons: function (items) {
-      this.pokemons = []
+    storePokemons: function (items, local) {
+      if (!local) { // use local data
+        window.localStorage.setItem(`pokemons${this.activeGen[2]}`, JSON.stringify(items))
+      }
       this.pokemons = items.map((item, i) => {
         let obj = {
           id: i + this.activeGen[0],
@@ -234,15 +241,34 @@
       while (this.elements.wrapper.firstChild) {
         this.elements.wrapper.removeChild(this.elements.wrapper.firstChild) // empty section
       }
-      api.loadSingle(id).then((result) => {
-        this.elements.loader.classList.add('hidden')
-        this.render(JSON.parse(result))
-      }).catch(() => {
-        routie('error')
+      if (!window.localStorage.getItem(`pokemons${id}`)) { // get local data if available
+        let pokemon = JSON.parse(window.localStorage.getItem(`pokemon${id}`))
+      } else {
+        api.loadSingle(id).then((result) => {
+          this.elements.loader.classList.add('hidden')
+          let res = this.handleData(JSON.parse(result))
+          window.localStorage.setItem(`pokemon${id}`, JSON.stringify(res))
+          this.render(JSON.parse(result))
+        }).catch(() => {
+          routie('error')
+        })
+      }
+    },
+    handleData: function (data) { // function to create usable object out of data
+      let pokemon = {
+        height: data.height,
+        weight: data.weight,
+        sprites: {
+          front_default: data.front_default,
+          back_default: data.back_default
+        }
+      }
+      data.types.forEach((type, i) => {
+        pokemon.types.types[i] = type
       })
+      console.log(pokemon)
     },
     render: function (data) {
-      // this.elements.wrapper.classList.add('hidden')
       let types = ''
       data.types.forEach((type) => {
         types += `<div class="type">${type.type.name}</div>`
@@ -267,7 +293,7 @@
     }
   }
   const api = {
-    gen: [[0, 151], [152, 251], [252, 368]],
+    gen: [[0, 151, 0], [152, 251, 1], [252, 368, 2]],
     loadGeneration: function (gen) {
       return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest()
