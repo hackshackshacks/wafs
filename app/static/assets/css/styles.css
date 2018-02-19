@@ -8,7 +8,7 @@ body {
   height: 100vh;
   margin: 0;
   padding: 0;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto 1fr;
 }
 
 nav ul{
@@ -33,12 +33,14 @@ section {
    color: #ffce00;
    font-size: 5em;
   -webkit-text-stroke: 3px #356abd;
-  transform: translatey(-10rem);
+  /* transform: translatey(-10rem); */
  }
-.whoIs {
+.game {
   background: url("../images/pokebg.jpg");
   background-size: cover;
   position: relative;
+  height: 70vh;
+  width: 80vw;
 }
 .active {
   display: block;
@@ -53,15 +55,36 @@ section {
   place-items: center center;
 }
 .imgWrap img:nth-of-type(2) {
-  filter: grayscale(100%) brightness(.2) invert(50%) sepia(100%) saturate(100) hue-rotate(200deg) contrast(200%);
+  filter: none;
   width: 100%;
   transition: filter 300ms;
 }
-.singleName {
+.ingame .imgWrap img:nth-of-type(2) {
+  filter: grayscale(100%) brightness(.2) invert(50%) sepia(100%) saturate(100) hue-rotate(200deg) contrast(200%);
+}
+output, form.userGuess {
   display: none;
 }
-.revealed .imgWrap img:nth-of-type(2) {
-  filter: none;
+.ingame output {
+  display: block;
+  font-family: poke;
+  font-size: 10em;
+  color: #ffce00;
+  -webkit-text-stroke: 10px #356abd;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+.ingame form {
+  display: block;
+}
+.ingame #pokemonName {
+  display: none;
+}
+.ingame button, .ingame #message {
+  display: none;
+}
+.singleName {
+  display: none;
 }
 .loader {
   max-width: 4rem;
@@ -85,19 +108,16 @@ section {
 .pokemonList li a{
   display: flex;
 }
-.revealed .singleName {
-  display: block;
-}
 .hidden {
   display: none;
 }
-output {
-  font-family: poke;
-  font-size: 10em;
-  color: #ffce00;
-  -webkit-text-stroke: 10px #356abd;
-  font-feature-settings: "tnum";
-  font-variant-numeric: tabular-nums;
+footer {
+  position: fixed;
+  bottom: 1em;
+  background: white;
+}
+#detail.active ~ footer {
+  display: none;
 }
 @keyframes rotate {
   from {

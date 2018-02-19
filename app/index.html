@@ -1,54 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="static/assets/css/styles.css">
-    <title>Document</title>
-  </head>
-  <body>
-    <nav>
-      <ul>
-        <li>
-          <a href="#game">Who is this pokemon??</a>
-        </li>
-        <li>
-          <a href="#overview">List of pokemons</a>
-        </li>
-      </ul>
-    </nav>
-    <section class="whoIs active" id="game">
-      <output id="counter">10</output>
-      <div class="imgWrap">
-        <img src="http://www.freeiconspng.com/uploads/load-icon-png-10.png" id="gameLoader" class="loader">
-        <img src="" alt="" id="img">
-        <h1 id="pokemonName"></h1>
-      </div>
-      <form class="userGuess">
-          <input type="text" id="guess">
-          <input type="submit" id="submitGuess">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="static/assets/css/styles.css">
+  <title>Document</title>
+</head>
+
+<body>
+  <nav>
+    <ul>
+      <li>
+        <a href="#game">Who is this pokemon??</a>
+      </li>
+      <li>
+        <a href="#pokedex">Pokedex</a>
+      </li>
+    </ul>
+  </nav>
+  <section class="game active" id="game">
+    <output id="counter">10</output>
+    <form class="userGuess">
+      <input type="text" id="guess">
+      <input type="submit" id="submitGuess">
+    </form>
+    <h1 id="pokemonName"></h1>
+    <button id="newGame" disabled>New game</button>
+    <h1 id="message"></h1>
+    <h1 id="score"></h1>
+    <div class="imgWrap">
+      <img src="http://www.freeiconspng.com/uploads/load-icon-png-10.png" id="gameLoader" class="loader">
+      <img src="" alt="" id="img">
+    </div>
+  </section>
+  <section id="pokedex">
+    <h1>Pokemons</h1>
+    <form>
+      <label for="search">Search:
+        <input type="text" id="search">
+      </label>
+      <input type="submit" id="submitSearch">
+    </form>
+    <ul id="pokemonList" class="pokemonList"></ul>
+    <img src="http://www.freeiconspng.com/uploads/load-icon-png-10.png" id="listLoader" class="loader">
+    <button id="loadMore">load more..</button>
+  </section>
+  <section id="detail">
+    <img src="http://www.freeiconspng.com/uploads/load-icon-png-10.png" id="detailLoader" class="loader">
+    <div class="pokemon"></div>
+  </section>
+  <section id="error">
+    <img src="static/assets/images/squirtlecrying.gif" alt="">
+    <p>We weren't able to load this page.</p>
+  </section>
+  <footer>
+    <form>
+        <fieldset>
+          <legend>Generation:</legend>
+          <label for="gen1">Gen1
+            <input type="radio" name="generation" id="gen1" value="gen1" checked>
+          </label>
+          <label for="gen2">Gen2
+            <input type="radio" name="generation" id="gen2" value="gen2">
+          </label>
+          <label for="gen3">Gen3
+            <input type="radio" name="generation" id="gen3" value="gen3">
+          </label>
+        </fieldset>
       </form>
-      <button id="newGame">New game</button>
-      <h1 id="message">Super!</h1>
-      <h1 id="score"></h1>
-    </section>
-    <section id="overview">
-      <h1>Pokemons</h1>
-      <form>
-        <label for="search">Search: <input type="text" id="search"></label>
-        <input type="submit" id="submitSearch">
-      </form>
-      <ul id="pokemonList" class="pokemonList"></ul>
-      <img src="http://www.freeiconspng.com/uploads/load-icon-png-10.png" id="listLoader" class="loader">
-      <button id="loadMore">load more..</button>
-    </section>
-    <section id="detail">
-      <h1>Detail</h1>
-      <img src="http://www.freeiconspng.com/uploads/load-icon-png-10.png" id="detailLoader" class="loader">
-      <ul id="detailList"></ul>
-    </section>
-    <script src="static/js/routie.js"></script>
-    <script src="static/js/script.js"></script>
-  </body>
+  </footer>
+  <script src="static/js/routie.js"></script>
+  <script src="static/js/scriptNew.js"></script>
+</body>
+
 </html>

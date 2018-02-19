@@ -1,52 +1,13 @@
-/* TODO
-- App
-    - Variabelen (generaties definieren)
-    - Init (routes, events)
-    - Preventdefault a
-    - Pokemons ophalen en lokaal opslaan
-- Routes
-- Game
-    - Elementen
-    - Variables (score, tijd, Pokemons)
-    - Init (startwaarden vastleggen
-    - Handleevents (buttons)
-    - Randomize (helper?)
-    - Start game
-    - Countdown
-    - Validate input
-    - Reset
-    - Render
-- Pokedex
-    - Elementen
-    - Variabelen
-    - Init (nextpokemons (eerste 5))
-    - Handleevents
-    - nextPokemons
-    - Filter (search)
-    - Render
-- Detail
-    - Elementen
-    - Init
-    - loadPokemon(-> api)
-- Api
-    - loadGeneration (all pokerons uit bepaalde generatie)
-    - loadSingle
-- Helper
-    - capitalize
-    - randomize
-    - render
-*/
-
 (() => {
   const app = {
-    pokemons: [],
-    activeGen: [0, 151],
     elements: {
       sections: document.querySelectorAll('section'),
       navItems: document.querySelectorAll('nav a'),
       radioBtns: document.querySelectorAll('input[type="radio"')
     },
     init: function () {
+      this.pokemons = []
+      this.activeGen = [0, 151]
       routes.init()
       this.handleEvents()
       this.getPokemons()
@@ -63,6 +24,9 @@
           if (this.elements.radioBtns[i].checked && this.activeGen !== api.gen[i]) {
             this.activeGen = api.gen[i]
             this.getPokemons()
+            if (window.location.hash === '#pokedex') {
+              pokedex.init()
+            }
           }
         })
       })
@@ -72,6 +36,7 @@
       //   this.storePokemons(JSON.parse(window.localStorage.getItem('pokemons')))
       // } else {
       game.elements.load.classList.remove('hidden')
+      pokedex.elements.loader.classList.remove('hidden')
       game.elements.newGame.disabled = true
       api.loadGeneration(this.activeGen)
       .then((result) => {
@@ -81,6 +46,7 @@
       })
       .then(() => {
         game.elements.load.classList.add('hidden')
+        pokedex.elements.loader.classList.add('hidden')
       })
       // }
     },
@@ -88,7 +54,7 @@
       this.pokemons = []
       this.pokemons = items.map((item, i) => {
         let obj = {
-          id: i + 1,
+          id: i + this.activeGen[0],
           name: item.name
         }
         return obj
@@ -103,11 +69,15 @@
           this.toggle()
         },
         'pokedex': () => {
+          pokedex.init()
           this.toggle()
-          game.end()
         },
         'pokedex/:pokemon?': (i) => {
-          detail.init(Number(i) + 1)
+          detail.init(Number(i))
+          this.toggle(i)
+        },
+        'error': () => {
+          this.toggle()
         },
         '': () => {
           routie('game')
@@ -117,8 +87,9 @@
         }
       })
     },
-    toggle: function () {
-      let active = document.querySelector(`${window.location.hash}`)
+    toggle: function (i) {
+      let active
+      i ? active = document.querySelector(`#detail`) : active = document.querySelector(`${window.location.hash}`)
       app.elements.sections.forEach((section) => {
         section.classList.remove('active')
       })
@@ -126,10 +97,6 @@
     }
   } // sections
   const game = {
-    count: false,
-    gameTime: 10, // seconds
-    score: 0,
-    currentPokemon: null,
     elements: {
       load: document.querySelector('#gameLoader'),
       image: document.querySelector('#img'),
@@ -144,6 +111,9 @@
     },
     init: function () {
       this.handleEvents()
+      this.count = false
+      this.gameTime = 10 // seconds
+      this.score = 0
     }, // todo empty
     handleEvents: function () {
       this.elements.submit.addEventListener('click', () => {
@@ -199,14 +169,103 @@
       }
     },
     render: function (pokemon) {
-      this.elements.image.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id + app.activeGen[0]}.png`
-      this.elements.name.innerHTML = `It's ${helper.capitalize(this.currentPokemon.name)}`
+      this.elements.image.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id + 1}.png`
+      this.elements.name.innerHTML = `It's ${helper.capitalizeFirst(this.currentPokemon.name)}`
       this.elements.input.classList.remove('hidden')
       this.elements.submit.classList.remove('hidden')
     }
   }
-  const pokedex = {}
-  const detail = {}
+  const pokedex = {
+    elements: {
+      list: document.querySelector('#pokemonList'),
+      load: document.querySelector('#loadMore'),
+      loader: document.querySelector('#listLoader'),
+      search: document.querySelector('#search'),
+      submit: document.querySelector('#submitSearch')
+    },
+    init: function () {
+      this.startAmount = 5
+      this.offset = 0
+      this.handleEvents()
+      this.update = setInterval(() => {
+        this.render(app.pokemons)
+      }, 1000)
+    },
+    handleEvents: function () {
+      this.elements.search.addEventListener('input', () => {
+        this.search(this.elements.search.value) // load pokemons with filter
+      })
+    },
+    render: function (arr) {
+      if (app.pokemons.length > 1) {
+        clearInterval(this.update)
+        let list = arr.map((pokemon, i) => `
+        <li>
+          <a href="#pokedex/${pokemon.id + 1}">
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id + 1}.png">
+            <p>${helper.capitalizeFirst(pokemon.name)}</p>
+          </a>
+        </li>
+        `).join('')
+        this.elements.list.innerHTML = list
+        this.currentAmount += this.startAmount
+      }
+    },
+    search: function (input) {
+      let results = app.pokemons.filter((pokemon) => {
+        if (pokemon.name.includes(input)) {
+          return pokemon
+        }
+      })
+      this.render(results)
+    }
+  }
+  const detail = {
+    elements: {
+      wrapper: document.querySelector('.pokemon'),
+      loader: document.querySelector('#detailLoader')
+    },
+    init: function (id) {
+      this.loadPokemon(id)
+      this.pokemon = {}
+    },
+    loadPokemon: function (id) {
+      this.elements.loader.classList.remove('hidden')
+      while (this.elements.wrapper.firstChild) {
+        this.elements.wrapper.removeChild(this.elements.wrapper.firstChild) // empty section
+      }
+      api.loadSingle(id).then((result) => {
+        this.elements.loader.classList.add('hidden')
+        this.render(JSON.parse(result))
+      }).catch(() => {
+        routie('error')
+      })
+    },
+    render: function (data) {
+      // this.elements.wrapper.classList.add('hidden')
+      let types = ''
+      data.types.forEach((type) => {
+        types += `<div class="type">${type.type.name}</div>`
+      })
+      let template = `
+        <h1>${helper.capitalizeFirst(data.name)}</h1>
+        <img src=${data.sprites.front_default}>
+        <img src=${data.sprites.back_default}>
+        <div class="pokemon_info">
+          <div>
+            <h3>Height</h3>
+            <p>${data.height}</p>
+          </div>
+          <div>
+            <h3>Weight</h3>
+            <p>${data.weight}</p>
+          </div>
+          <div class="types">${types}</div>
+        </div>
+      `
+      this.elements.wrapper.insertAdjacentHTML('beforeend', template)
+    }
+  }
   const api = {
     gen: [[0, 151], [152, 251], [252, 368]],
     loadGeneration: function (gen) {
@@ -217,13 +276,22 @@
         xhr.onerror = () => reject(xhr.statusText)
         xhr.send()
       })
+    },
+    loadSingle: function (id) {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        xhr.open('get', `https://pokeapi.co/api/v2/pokemon/${id}`)
+        xhr.onload = () => resolve(xhr.responseText)
+        xhr.onerror = () => reject(xhr.statusText)
+        xhr.send()
+      })
     }
   }
   const helper = {
     randomize: function (min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min) // number between min and max
     },
-    capitalize: function (string) {
+    capitalizeFirst: function (string) {
       return string.charAt(0).toUpperCase() + string.slice(1)
     }
   }
