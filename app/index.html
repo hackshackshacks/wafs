@@ -20,10 +20,10 @@
       </li>
     </ul>
   </nav>
-  <section class="game active" id="game">
+  <section class="game" id="game">
     <output id="counter">10</output>
     <form class="userGuess">
-      <input type="text" id="guess">
+      <input type="text" id="guess" autocomplete="off">
       <input type="submit" id="submitGuess">
     </form>
     <h1 id="pokemonName"></h1>
@@ -31,7 +31,7 @@
     <h1 id="message"></h1>
     <h1 id="score"></h1>
     <div class="imgWrap">
-      <img src="http://www.freeiconspng.com/uploads/load-icon-png-10.png" id="gameLoader" class="loader">
+      <img src="static/assets/images/loading.gif" id="gameLoader" class="loader">
       <img src="" alt="" id="img">
     </div>
   </section>
@@ -44,11 +44,11 @@
       <input type="submit" id="submitSearch">
     </form>
     <ul id="pokemonList" class="pokemonList"></ul>
-    <img src="http://www.freeiconspng.com/uploads/load-icon-png-10.png" id="listLoader" class="loader">
+    <img src="static/assets/images/loading.gif" id="listLoader" class="loader">
     <button id="loadMore">load more..</button>
   </section>
   <section id="detail">
-    <img src="http://www.freeiconspng.com/uploads/load-icon-png-10.png" id="detailLoader" class="loader">
+    <img src="static/assets/images/loading.gif" id="detailLoader" class="loader">
     <div class="pokemon"></div>
   </section>
   <section id="error">

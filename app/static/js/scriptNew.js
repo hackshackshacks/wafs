@@ -1,6 +1,7 @@
 (() => {
   const app = {
     elements: {
+      body: document.querySelector('body'),
       sections: document.querySelectorAll('section'),
       navItems: document.querySelectorAll('nav a'),
       radioBtns: document.querySelectorAll('input[type="radio"')
@@ -31,10 +32,7 @@
         })
       })
     },
-    getPokemons: function () { // todo fix local storage
-      // if (false) {
-      //   this.storePokemons(JSON.parse(window.localStorage.getItem('pokemons')))
-      // } else {
+    getPokemons: function () {
       game.elements.load.classList.remove('hidden')
       pokedex.elements.loader.classList.remove('hidden')
       game.elements.newGame.disabled = true
@@ -95,12 +93,14 @@
       })
     },
     toggle: function (i) {
-      let active
-      i ? active = document.querySelector(`#detail`) : active = document.querySelector(`${window.location.hash}`)
-      app.elements.sections.forEach((section) => {
-        section.classList.remove('active')
-      })
-      active.classList.add('active')
+      app.elements.body.className = ''
+      app.elements.body.classList.add(window.location.hash.replace('#', ''))
+      // let active
+      // i ? active = document.querySelector(`#detail`) : active = document.querySelector(`${window.location.hash}`)
+      // app.elements.sections.forEach((section) => {
+      //   section.classList.remove('active')
+      // })
+      // active.classList.add('active')
     }
   } // sections
   const game = {
