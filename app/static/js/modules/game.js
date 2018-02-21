@@ -18,6 +18,10 @@ const game = {
     this.handleEvents()
     this.count = false
     this.gameTime = 10 // seconds
+    this.startSound = new Audio('static/assets/sounds/pokemon_sound.mp3')
+    this.endSound = new Audio('static/assets/sounds/pokemon_sound_end.mp3')
+    this.startSound.volume = 0.2
+    this.endSound.volume = 0.2
     if (window.localStorage.getItem(`score`) > 0) {
       this.score = window.localStorage.getItem(`score`)
     } else {
@@ -38,10 +42,12 @@ const game = {
     this.countdown()
     this.toggleState('ingame')
     this.render(this.currentPokemon)
-    let sound = new Audio('static/assets/sounds/pokemon_sound.mp3') // because spamming is fun
-    sound.play()
+    this.startSound.play()
   },
   end: function () {
+    this.startSound.pause()
+    this.startSound.currentTime = 0
+    this.endSound.play()
     this.toggleState()
     // reset timer
     clearInterval(this.count)
