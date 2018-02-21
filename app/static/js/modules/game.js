@@ -72,7 +72,7 @@ const game = {
       window.localStorage.setItem(`score`, this.score)
       helper.replaceHTML(this.elements.score, `Score: ${this.score}`)
     } else {
-      helper.replaceHTML(this.elements.score, `Too bad!`)
+      helper.replaceHTML(this.elements.output, `Too bad!`)
     }
     this.elements.input.value = ''
   },
