@@ -33,15 +33,15 @@
     <main>
       <h1 id="pokemonName">Who is this Pokemon?</h1>
       <output id="counter">10</output>
-      <h1 id="message"></h1>
       <div class="imgWrap">
         <img src="static/assets/images/loading.gif" id="gameLoader" class="loader">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" alt="" id="img">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" draggable=false id="img">
       </div>
       <form class="userGuess">
         <input type="text" id="guess" autocomplete="off">
         <button type="submit" id="submitGuess">Go</button>
       </form>
+      <h2 id="message"></h1>
       <button id="newGame" disabled>New game</button>
       <h3 id="score"></h3>
     </main>

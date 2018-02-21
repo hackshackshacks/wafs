@@ -4,7 +4,7 @@
       body: document.querySelector('body'),
       sections: document.querySelectorAll('section'),
       navItems: document.querySelectorAll('nav a'),
-      radioBtns: document.querySelectorAll('input[type="radio"')
+      radioBtns: document.querySelectorAll('nav input[type="radio"')
     },
     init: function () {
       this.pokemons = []
@@ -12,6 +12,10 @@
       routes.init()
       this.handleEvents()
       this.getPokemons()
+      this.foundPokemons = []
+      if (!window.localStorage.getItem('foundPokemons')) {
+        window.localStorage.setItem('foundPokemons', this.foundPokemons)
+      }
     },
     handleEvents: function () {
       this.elements.navItems.forEach(function (element) {
@@ -35,13 +39,13 @@
     getPokemons: function () {
       game.elements.load.classList.remove('hidden')
       pokedex.elements.loader.classList.remove('hidden')
-      game.elements.newGame.innerHTML = `Catching pokemons..`
+      helper.replaceHTML(game.elements.newGame, `Catching pokemons..`)
       game.elements.newGame.disabled = true
       if (!window.localStorage.getItem(`pokemons${this.activeGen[2]}`)) { // get local data if available
         api.loadGeneration(this.activeGen)
         .then((result) => {
           game.elements.newGame.disabled = false
-          game.elements.newGame.innerHTML = `New game`
+          helper.replaceHTML(game.elements.newGame, `New game`)
           this.storePokemons(JSON.parse(result).results, false)
         })
         .then(() => {
@@ -49,7 +53,7 @@
           pokedex.elements.loader.classList.add('hidden')
         })
       } else {
-        game.elements.newGame.innerHTML = `New game`
+        helper.replaceHTML(game.elements.newGame, `New game`)
         game.elements.newGame.disabled = false
         game.elements.load.classList.add('hidden')
         pokedex.elements.loader.classList.add('hidden')
@@ -145,33 +149,37 @@
       // reset timer
       clearInterval(this.count)
       this.count = false
-      game.elements.output.innerHTML = game.gameTime
+      helper.replaceHTML(game.elements.output, game.gameTime)
       this.validate()
     },
     toggleState: function (state) {
       if (state === 'ingame') {
         this.elements.wrapper.classList.add('ingame')
+        this.elements.input.focus()
       } else {
         this.elements.wrapper.classList.remove('ingame')
       }
     },
     validate: function () {
       if (this.elements.input.value.toLowerCase() === this.currentPokemon.name) { // validate input value and update score
-        this.elements.output.innerHTML = 'Amazing!'
+        helper.replaceHTML(this.elements.output, 'Amazing!')
         this.score++
+        app.foundPokemons.push(this.currentPokemon.id)
+        window.localStorage.setItem(`foundPokemons`, JSON.stringify(app.foundPokemons)) // todo
         window.localStorage.setItem(`score`, this.score)
-        this.elements.score.innerHTML = `Score: ${this.score}`
+        helper.replaceHTML(this.elements.score, `Score: ${this.score}`)
       } else {
-        this.elements.output.innerHTML = 'Too bad!'
+        helper.replaceHTML(this.elements.score, `Too bad!`)
       }
+      this.elements.input.value = ''
     },
     countdown: function () {
       let time = this.gameTime
-      this.elements.output.innerHTML = time
+      helper.replaceHTML(this.elements.output, time)
       if (!this.count) {
         this.count = setInterval(() => { // set variable to setinterval function
           time--
-          this.elements.output.innerHTML = time // todo innerhtml to innertext??
+          helper.replaceHTML(this.elements.output, time)
           if (time <= 0) {
             this.end() // end game when time is up
           }
@@ -180,7 +188,7 @@
     },
     render: function (pokemon) {
       this.elements.image.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id + 1}.png`
-      this.elements.name.innerHTML = `It's ${helper.capitalizeFirst(this.currentPokemon.name)}`
+      helper.replaceHTML(this.elements.name, `It's ${helper.capitalizeFirst(this.currentPokemon.name)}`)
     }
   }
   const pokedex = {
@@ -205,18 +213,35 @@
       })
     },
     render: function (arr) {
-      if (app.pokemons.length > 1) {
+      helper.emptyElement(this.elements.list)
+      if (arr.length > 0) {
         clearInterval(this.update)
-        let list = arr.map((pokemon, i) => `
-        <li>
-          <a href="#pokedex/${pokemon.id + 1}">
-            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id + 1}.png">
-            <p>${helper.capitalizeFirst(pokemon.name)}</p>
-          </a>
-        </li>
-        `).join('')
-        this.elements.list.innerHTML = list
+        let found = JSON.parse(window.localStorage.getItem('foundPokemons'))
+        let list = arr.map((pokemon, i) => {
+          if (helper.checkArray(found, pokemon.id)) {
+            return `
+            <li>
+              <a href="#pokedex/${pokemon.id + 1}">
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id + 1}.png">
+                <p>${helper.capitalizeFirst(pokemon.name)}</p>
+              </a>
+            </li>
+            `
+          } else {
+            return `
+            <li>
+              <a class="pokeHidden">
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id + 1}.png">
+                <p>Unknown</p>
+              </a>
+            </li>
+            `
+          }
+        }).join('')
+        this.elements.list.insertAdjacentHTML('beforeend', list)
         this.currentAmount += this.startAmount
+      } else {
+        this.elements.list.insertAdjacentHTML('beforeend', '<figure><img src="static/assets/images/squirtlecrying.gif"><figcaption>No results. Try another generation</figcaption></figure>')
       }
     },
     search: function (input) {
@@ -325,6 +350,24 @@
     },
     capitalizeFirst: function (string) {
       return string.charAt(0).toUpperCase() + string.slice(1)
+    },
+    emptyElement: function (element) {
+      while (element.firstChild) {
+        element.removeChild(element.firstChild)
+      }
+    },
+    replaceHTML: function (element, string) {
+      this.emptyElement(element)
+      element.insertAdjacentHTML('beforeend', string)
+    },
+    checkArray: function (arr, value) {
+      let hasValue = false
+      arr.forEach((item, i) => {
+        if (arr[i] === value) {
+          hasValue = true
+        }
+      })
+      return hasValue
     }
   }
   app.init()
