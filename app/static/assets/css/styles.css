@@ -97,9 +97,12 @@ body .game > main {
   margin: 3em auto 0 auto;
   max-width: 400px;
 }
-body .game h1, body .game output {
+body .game h1, body .game h3, body .game output {
   text-align: center;
   margin-bottom: 1em;
+}
+body .game h3 {
+  margin-top: 1em;
 }
 body .game output {
   font-size: 1.875em;

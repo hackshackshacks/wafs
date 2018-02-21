@@ -117,7 +117,11 @@
       this.handleEvents()
       this.count = false
       this.gameTime = 10 // seconds
-      this.score = 0
+      if (window.localStorage.getItem(`score`) > 0) {
+        this.score = window.localStorage.getItem(`score`)
+      } else {
+        this.score = 0 
+      }
     },
     handleEvents: function () {
       this.elements.submit.addEventListener('click', () => {
@@ -155,6 +159,7 @@
       if (this.elements.input.value.toLowerCase() === this.currentPokemon.name) { // validate input value and update score
         this.elements.output.innerHTML = 'Amazing!'
         this.score++
+        window.localStorage.setItem(`score`, this.score)
         this.elements.score.innerHTML = `Score: ${this.score}`
       } else {
         this.elements.output.innerHTML = 'Too bad!'
