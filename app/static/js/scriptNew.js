@@ -35,11 +35,13 @@
     getPokemons: function () {
       game.elements.load.classList.remove('hidden')
       pokedex.elements.loader.classList.remove('hidden')
+      game.elements.newGame.innerHTML = `Catching pokemons..`
       game.elements.newGame.disabled = true
       if (!window.localStorage.getItem(`pokemons${this.activeGen[2]}`)) { // get local data if available
         api.loadGeneration(this.activeGen)
         .then((result) => {
           game.elements.newGame.disabled = false
+          game.elements.newGame.innerHTML = `New game`
           this.storePokemons(JSON.parse(result).results, false)
         })
         .then(() => {
@@ -47,6 +49,7 @@
           pokedex.elements.loader.classList.add('hidden')
         })
       } else {
+        game.elements.newGame.innerHTML = `New game`
         game.elements.newGame.disabled = false
         game.elements.load.classList.add('hidden')
         pokedex.elements.loader.classList.add('hidden')
