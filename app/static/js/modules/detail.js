@@ -1,4 +1,4 @@
-import api from '/static/js/modules/api.js'
+import api from 'app/static/js/modules/api.js'
 
 const detail = {
   elements: {

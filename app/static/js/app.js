@@ -1,9 +1,9 @@
-import config from '/static/js/modules/config.js'
-import routes from '/static/js/modules/routes.js'
-import pokedex from '/static/js/modules/pokedex.js'
-import game from '/static/js/modules/game.js'
-import helper from '/static/js/modules/helper.js'
-import api from '/static/js/modules/api.js'
+import config from 'app/static/js/modules/config.js'
+import routes from 'app/static/js/modules/routes.js'
+import pokedex from 'app/static/js/modules/pokedex.js'
+import game from 'app/static/js/modules/game.js'
+import helper from 'app/static/js/modules/helper.js'
+import api from 'app/static/js/modules/api.js'
 (() => {
   const app = {
     elements: {
