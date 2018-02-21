@@ -1,5 +1,5 @@
-import helper from 'app/static/js/modules/helper.js'
-import config from 'app/static/js/modules/config.js'
+import helper from '/app/static/js/modules/helper.js'
+import config from '/app/static/js/modules/config.js'
 
 const game = {
   elements: {
