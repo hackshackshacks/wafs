@@ -1,4 +1,5 @@
-import api from '/app/static/js/modules/api.js'
+import api from '/static/js/modules/api.js'
+import helper from '/static/js/modules/helper.js'
 
 const detail = {
   elements: {
