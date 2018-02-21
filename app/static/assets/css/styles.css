@@ -69,6 +69,7 @@ nav form label {
   color: #fff;
   display: inline-block;
   text-align: center;
+  white-space: nowrap;
 }
 /* nav items */
 nav ul{
