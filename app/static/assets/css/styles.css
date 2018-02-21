@@ -315,6 +315,11 @@ section {
   width: 100%;
   transition: filter 300ms;
 }
+.pokemon {
+  animation: fadeIn 300ms forwards;
+  opacity: 0;
+  transform: translateY(2rem);
+}
 .ingame .imgWrap img:nth-of-type(2), .pokeHidden img {
   filter: grayscale(100%) brightness(.2) invert(50%) sepia(100%) saturate(100) hue-rotate(200deg) contrast(200%);
   transition: filter 0s;
@@ -352,5 +357,15 @@ footer {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

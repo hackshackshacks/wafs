@@ -25,11 +25,15 @@ const pokedex = {
     helper.emptyElement(this.elements.list)
     if (arr.length > 0) {
       clearInterval(this.update)
-      let found = JSON.parse(window.localStorage.getItem('foundPokemons'))
+      console.log(window.localStorage.getItem('foundPokemons'))
+      let found = []
+      if (window.localStorage.getItem('foundPokemons')) {
+        found = JSON.parse(window.localStorage.getItem('foundPokemons'))
+      }
       let list = arr.map((pokemon, i) => {
         if (helper.checkArray(found, pokemon.id)) {
           return `
-          <li>
+          <li class="pokemon" style="animation-delay: calc(50ms * ${i})">
             <a href="#pokedex/${pokemon.id + 1}">
               <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id + 1}.png">
               <p>${helper.capitalizeFirst(pokemon.name)}</p>
@@ -38,8 +42,8 @@ const pokedex = {
           `
         } else {
           return `
-          <li>
-            <a class="pokeHidden">
+          <li class="pokemon pokehidden" style="animation-delay: calc(50ms * ${i})">
+            <a>
               <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id + 1}.png">
               <p>Unknown</p>
             </a>
