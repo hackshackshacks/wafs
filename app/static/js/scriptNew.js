@@ -132,7 +132,7 @@
       this.currentPokemon = app.pokemons[rnd]
       this.countdown()
       this.toggleState('ingame')
-      this.render(this.currentPokemon) // returns number between min and max
+      this.render(this.currentPokemon)
       let sound = new Audio("../app/static/assets/sounds/pokemon_sound.mp3") // because spamming is fun
       sound.play()
     },
@@ -237,42 +237,47 @@
       while (this.elements.wrapper.firstChild) {
         this.elements.wrapper.removeChild(this.elements.wrapper.firstChild) // empty section
       }
-      if (!window.localStorage.getItem(`pokemons${id}`)) { // get local data if available
-        let pokemon = JSON.parse(window.localStorage.getItem(`pokemon${id}`))
+      if (window.localStorage.getItem(`pokemon${id}`)) { // get local data if available
+        this.elements.loader.classList.add('hidden')
+        this.render(JSON.parse(window.localStorage.getItem(`pokemon${id}`)))
       } else {
         api.loadSingle(id).then((result) => {
           this.elements.loader.classList.add('hidden')
           let res = this.handleData(JSON.parse(result))
           window.localStorage.setItem(`pokemon${id}`, JSON.stringify(res))
-          this.render(JSON.parse(result))
+          this.render(res)
         }).catch((err) => {
           console.log(err)
         })
       }
     },
     handleData: function (data) { // function to create usable object out of data
+      console.log(data.sprites)
       let pokemon = {
+        name: data.name,
         height: data.height,
         weight: data.weight,
         sprites: {
-          front_default: data.front_default,
-          back_default: data.back_default
+          front: data.sprites.front_default,
+          back: data.sprites.back_default
         },
         types: []
       }
       data.types.forEach((type, i) => {
         pokemon.types[i] = type.type.name
       })
+      return pokemon
     },
     render: function (data) {
+      console.log(data)
       let types = ''
       data.types.forEach((type) => {
-        types += `<div class="type">${type.type.name}</div>`
+        types += `<div class="type ${type}">${type}</div>`
       })
       let template = `
         <h1>${helper.capitalizeFirst(data.name)}</h1>
-        <img src=${data.sprites.front_default}>
-        <img src=${data.sprites.back_default}>
+        <img src=${data.sprites.front} class="sprite front">
+        <img src=${data.sprites.back} class="sprite back">
         <div class="pokemon_info">
           <div>
             <h3>Height</h3>
