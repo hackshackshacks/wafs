@@ -1,3 +1,10 @@
+:root {
+  --lato: 'Lato', sans-serif;
+  --grey: #606060;
+  --dGrey: #242424;
+  --lGrey: #D3D3D3;
+  --yellow: #FFCB05;
+}
 * {
   box-sizing: border-box;
 }
@@ -7,10 +14,9 @@ html {
 }
 
 body {
-  display: grid;
-  grid-template-columns: 100vw 100vw;
+  font-family: var(--lato);
   height: 100%;
-  width: 200vw;
+  width: 100vw;
   margin: 0;
   padding: 0;
   background-color: #c7dbc0;
@@ -21,55 +27,193 @@ body {
   overflow-x: hidden;
   transition: 500ms;
 }
+body.pokedex, body.detail {
+  background-position: top right;
+}
+h1 {
+  font-size: 2.5em;
+  font-weight: 900;
+  color: var(--dGrey);
+}
+h1, h2, h3 {
+  margin: 0;
+}
 /* nav */
 nav {
-  grid-column: 1 / -1;
-  grid-row: 1;
-  z-index: 999;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 80%;
+  margin: 0 auto;
+  padding: 2em 0;
 }
+/* generations */
+nav form {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 1em;
+}
+nav form input {
+  position: absolute;
+  left: -100vw;
+  opacity: 0;
+}
+nav form input:checked + label {
+  background: #fff;
+  color: var(--dGrey);
+}
+nav form label {
+  border-radius: 100px;
+  box-sizing: border-box;
+  padding: 0.8em 1.5em;
+  border: 2px solid #fff;
+  color: #fff;
+  display: inline-block;
+  text-align: center;
+}
+/* nav items */
 nav ul{
-  display: flex;
+  display: grid;
+  align-content: center;
+  grid-gap: 1.5em;
+  grid-template-columns: 1fr auto auto;
   list-style: none;
   margin: 0;
   padding: 0;
 }
-nav ul li {
-  margin-right: 2em;
+nav li:nth-child(1) {
+  grid-column: 2 / 3;
 }
-/* sections */
-body.pokedex, body.detail {
-  background-position: top right;
+nav li a {
+  font-size: 1.25rem;
+  text-decoration: none;
+  color: var(--dGrey);
+  font-weight: 900;
 }
-body.game #game {
-  transform: translatex(0);
+nav li:hover a {
+  text-decoration: underline;
 }
-body.pokedex #pokedex {
-  transform: translatex(0);
+/* game */
+body .game > main {
+  margin: 3em auto 0 auto;
+  max-width: 400px;
 }
-body.detail #detail {
-  transform: translatex(0);
+body .game h1, body .game output {
+  text-align: center;
+  margin-bottom: 1em;
 }
-section.game {
-  transform: translatex(-100vw);
+body .game output {
+  font-size: 1.875em;
+  font-weight: 900;
+  display: block;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
 }
-section {
-  grid-column: 1 / -1;
-  grid-row: 1 / -1;
-  width: 100vw;
-  height: 100vh;
-  transform: translatex(100vw);
-  box-sizing: border-box;
-  transition: 500ms;
+body .game.ingame output {
+  display: block;
 }
-h1 {
-  color: #ffce00;
-  font-size: 5em;
+body .game.ingame output {
+  display: block;
+}
+body .game form {
+  width: 70%;
+  display: none;
+  grid-gap: 1em;
+  grid-template-columns: 4fr 1fr;
+  margin: 0 auto;
+}
+body .game.ingame form {
+  display: grid;
+}
+body .game.ingame main > button {
+  display: none;
+}
+body .game form input {
+  padding: 0.8em 1em;
+  font-size: 1.25em;
+  border: 1px solid var(--lGrey);
+  border-radius: 2px;
+}
+body .game button {
+  margin: 0 auto;
+  display: block;
+  border: 0;
+  background: var(--yellow);
+  color: #fff;
+  padding: 0.8em 1em;
+  font-size: 1.25em;
+  box-shadow: 0px 3px 6px 0 rgba(0,0,0,0.16);
+  font-family: var(--lato);
+  font-weight: 700;
+}
+body .game main > button {
+  width: 70%;
+}
+body .game button:disabled, body .game button[disabled] {
+  background: var(--grey);
 }
 .imgWrap {
-  width: 90%;
-  max-width: 700px;
   display: grid;
   place-items: center center;
+  margin: 0 auto;
+  margin-top: -2rem;
+}
+
+body.pokedex #pokedex main {
+  margin-left: 10%;
+  width: 50%;
+}
+body.pokedex #pokedex main header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  margin-bottom: 1em;
+}
+body.pokedex #pokedex main header form {
+  justify-self: end;
+}
+body.pokedex #pokedex main header form input {
+  border: 0;
+  background: transparent;
+  width: 13rem;
+  border-bottom: 2px solid var(--dGrey);
+  padding: 0.5em 0;
+  font-size: 1em;
+}
+body.pokedex #pokedex main header form input::-webkit-input-placeholder {
+  color: var(--dGrey);
+}
+body.pokedex #pokedex main ul {
+  display: grid;
+  grid-gap: 1em;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 1fr;
+}
+body.pokedex #pokedex main ul li {
+  background: rgba(0,0,0, 0.5);
+}
+body.pokedex #pokedex main ul li a {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center center;
+  color: #fff;
+  text-decoration: none;
+}
+
+body[class^="pokedex/"] #detail {
+  display: block;
+}
+/* sections */
+
+body.game #game, body.pokedex #pokedex, body.detail #detail {
+  display: block
+}
+section {
+  display: none;
+  width: 100vw;
+  box-sizing: border-box;
+  transition: 500ms;
+  z-index: 1;
 }
 .imgWrap img:nth-of-type(2) {
   filter: none;
@@ -78,16 +222,6 @@ h1 {
 }
 .ingame .imgWrap img:nth-of-type(2) {
   filter: grayscale(100%) brightness(.2) invert(50%) sepia(100%) saturate(100) hue-rotate(200deg) contrast(200%);
-}
-output, form.userGuess {
-  display: none;
-}
-.ingame output {
-  display: block;
-  font-size: 10em;
-  color: #ffce00;
-  font-feature-settings: "tnum";
-  font-variant-numeric: tabular-nums;
 }
 .ingame form {
   display: block;

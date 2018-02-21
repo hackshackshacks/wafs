@@ -95,12 +95,6 @@
     toggle: function (i) {
       app.elements.body.className = ''
       app.elements.body.classList.add(window.location.hash.replace('#', ''))
-      // let active
-      // i ? active = document.querySelector(`#detail`) : active = document.querySelector(`${window.location.hash}`)
-      // app.elements.sections.forEach((section) => {
-      //   section.classList.remove('active')
-      // })
-      // active.classList.add('active')
     }
   } // sections
   const game = {
@@ -121,11 +115,11 @@
       this.count = false
       this.gameTime = 10 // seconds
       this.score = 0
-    }, // todo empty
+    },
     handleEvents: function () {
       this.elements.submit.addEventListener('click', () => {
         this.end()
-      }) // todo
+      })
       this.elements.newGame.addEventListener('click', () => {
         this.start()
       })
@@ -156,15 +150,16 @@
     },
     validate: function () {
       if (this.elements.input.value.toLowerCase() === this.currentPokemon.name) { // validate input value and update score
-        this.elements.message.innerHTML = 'Nice!'
+        this.elements.output.innerHTML = 'Amazing!'
         this.score++
         this.elements.score.innerHTML = `Score: ${this.score}`
       } else {
-        this.elements.message.innerHTML = 'Too bad!'
+        this.elements.output.innerHTML = 'Too bad!'
       }
     },
     countdown: function () {
       let time = this.gameTime
+      this.elements.output.innerHTML = time
       if (!this.count) {
         this.count = setInterval(() => { // set variable to setinterval function
           time--
@@ -178,8 +173,6 @@
     render: function (pokemon) {
       this.elements.image.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id + 1}.png`
       this.elements.name.innerHTML = `It's ${helper.capitalizeFirst(this.currentPokemon.name)}`
-      this.elements.input.classList.remove('hidden')
-      this.elements.submit.classList.remove('hidden')
     }
   }
   const pokedex = {
@@ -249,8 +242,8 @@
           let res = this.handleData(JSON.parse(result))
           window.localStorage.setItem(`pokemon${id}`, JSON.stringify(res))
           this.render(JSON.parse(result))
-        }).catch(() => {
-          routie('error')
+        }).catch((err) => {
+          console.log(err)
         })
       }
     },
@@ -261,12 +254,12 @@
         sprites: {
           front_default: data.front_default,
           back_default: data.back_default
-        }
+        },
+        types: []
       }
       data.types.forEach((type, i) => {
-        pokemon.types.types[i] = type
+        pokemon.types[i] = type.type.name
       })
-      console.log(pokemon)
     },
     render: function (data) {
       let types = ''
