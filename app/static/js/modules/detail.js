@@ -1,5 +1,5 @@
-import api from '/static/js/modules/api.js'
-import helper from '/static/js/modules/helper.js'
+import api from './api.js'
+import helper from './helper.js'
 
 const detail = {
   elements: {

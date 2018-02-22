@@ -1,5 +1,5 @@
-import helper from '/static/js/modules/helper.js'
-import config from '/static/js/modules/config.js'
+import helper from './helper.js'
+import config from './config.js'
 const pokedex = {
   elements: {
     list: document.querySelector('#pokemonList'),
@@ -25,7 +25,6 @@ const pokedex = {
     helper.emptyElement(this.elements.list)
     if (arr.length > 0) {
       clearInterval(this.update)
-      console.log(window.localStorage.getItem('foundPokemons'))
       let found = []
       if (window.localStorage.getItem('foundPokemons')) {
         found = JSON.parse(window.localStorage.getItem('foundPokemons'))

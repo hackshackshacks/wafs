@@ -1,6 +1,6 @@
-import game from '/static/js/modules/game.js'
-import pokedex from '/static/js/modules/pokedex.js'
-import detail from '/static/js/modules/detail.js'
+import game from './game.js'
+import pokedex from './pokedex.js'
+import detail from './detail.js'
 
 const routes = {
   elements: {
