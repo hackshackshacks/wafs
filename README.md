@@ -15,15 +15,23 @@ On this page you can view details about the selected Pokemon. At this point the 
 ### Actor diagram
 ![Actor Diagram](/github_images/actor-diagram.png)
 
+
+
 ### Interaction diagram
 #### Core
 ![Actor Diagram](/github_images/interaction_1.png)
 
+
+
 #### Game
 ![Actor Diagram](/github_images/interaction_2.png)
 
+
+
 #### Pokedex
 ![Actor Diagram](/github_images/interaction_3.png)
+
+
 
 #### Detail
 ![Actor Diagram](/github_images/interaction_4.png)
