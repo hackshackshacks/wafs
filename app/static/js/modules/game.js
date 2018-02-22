@@ -43,6 +43,7 @@ const game = {
     this.toggleState('ingame')
     this.render(this.currentPokemon)
     this.startSound.play()
+    this.elements.input.value = ''
   },
   end: function () {
     this.startSound.pause()
@@ -74,7 +75,6 @@ const game = {
     } else {
       helper.replaceHTML(this.elements.output, `Too bad!`)
     }
-    this.elements.input.value = ''
   },
   countdown: function () {
     let time = this.gameTime
