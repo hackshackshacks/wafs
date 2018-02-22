@@ -54,8 +54,8 @@ This app uses the [pokeApi](https://pokeapi.co/) API. The API isn't as fast as I
 - Possibly get random Pokemons in the game based on the undiscovered Pokemons.
 
 ## Sources
-![Routie](http://projects.jga.me/routie/)
-![pokeApi](https://pokeapi.co/)
+[Routie](http://projects.jga.me/routie/)
+[pokeApi](https://pokeapi.co/)
 
 ## License
 Copyright 2018
