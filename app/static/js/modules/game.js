@@ -35,9 +35,9 @@ const game = {
     let rnd = helper.randomize(config.activeGen[0], config.activeGen[1])
     this.currentPokemon = config.pokemons[rnd]
     this.countdown()
-    this.render(this.currentPokemon)
     this.startSound.play()
     this.elements.input.value = ''
+    this.render(this.currentPokemon)
   },
   end: function () {
     this.startSound.pause()
