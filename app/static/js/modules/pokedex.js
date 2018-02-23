@@ -12,9 +12,13 @@ const pokedex = {
     this.startAmount = 5
     this.offset = 0
     this.handleEvents()
-    this.update = setInterval(() => {
+    if (config.pokemons) {
       this.render(config.pokemons)
-    }, 1000)
+    } else {
+      this.update = setInterval(() => {
+        this.render(config.pokemons)
+      }, 1000)
+    }
   },
   handleEvents: function () {
     this.elements.search.addEventListener('input', () => {
