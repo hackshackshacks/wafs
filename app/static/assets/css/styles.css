@@ -27,7 +27,7 @@ body {
   overflow-x: hidden;
   transition: 500ms;
 }
-body.pokedex, body.detail {
+body.pokedex, body[class^="pokedex/"] {
   background-position: top right;
 }
 h1 {

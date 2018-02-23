@@ -29,11 +29,9 @@ const game = {
     this.elements.newGame.addEventListener('click', () => {
       this.start()
     })
-    this.elements.image.addEventListener('load', () => {
-      this.toggleState('ingame')
-    })
   },
   start: function () {
+    this.toggleState('ingame')
     let rnd = helper.randomize(config.activeGen[0], config.activeGen[1])
     this.currentPokemon = config.pokemons[rnd]
     this.countdown()
