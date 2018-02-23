@@ -26,7 +26,7 @@ const pokedex = {
     if (arr.length > 0) {
       clearInterval(this.update)
       let found = []
-      if (window.localStorage.getItem('foundPokemons')) {
+      if (window.localStorage.getItem(`foundPokemons`) !== null) {
         found = JSON.parse(window.localStorage.getItem('foundPokemons'))
       }
       let list = arr.map((pokemon, i) => {

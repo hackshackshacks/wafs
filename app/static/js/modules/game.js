@@ -10,7 +10,6 @@ const game = {
     submit: document.querySelector('#submitGuess'),
     message: document.querySelector('#message'), // win or lose message element
     name: document.querySelector('#pokemonName'),
-    score: document.querySelector('#score'),
     newGame: document.querySelector('#newGame'),
     wrapper: document.querySelector('.game')
   },
@@ -22,11 +21,6 @@ const game = {
     this.endSound = new Audio('static/assets/sounds/pokemon_sound_end.mp3')
     this.startSound.volume = 0.2
     this.endSound.volume = 0.2
-    if (window.localStorage.getItem(`score`) > 0) {
-      this.score = window.localStorage.getItem(`score`)
-    } else {
-      this.score = 0
-    }
   },
   handleEvents: function () {
     this.elements.submit.addEventListener('click', () => {
@@ -35,12 +29,14 @@ const game = {
     this.elements.newGame.addEventListener('click', () => {
       this.start()
     })
+    this.elements.image.addEventListener('load', () => {
+      this.toggleState('ingame')
+    })
   },
   start: function () {
     let rnd = helper.randomize(config.activeGen[0], config.activeGen[1])
     this.currentPokemon = config.pokemons[rnd]
     this.countdown()
-    this.toggleState('ingame')
     this.render(this.currentPokemon)
     this.startSound.play()
     this.elements.input.value = ''
@@ -67,13 +63,13 @@ const game = {
   validate: function () {
     if (this.elements.input.value.toLowerCase() === this.currentPokemon.name) { // validate input value and update score
       helper.replaceHTML(this.elements.output, 'Amazing!')
-      this.score++
-      config.foundPokemons.push(this.currentPokemon.id)
-      window.localStorage.setItem(`foundPokemons`, JSON.stringify(config.foundPokemons)) // todo
-      window.localStorage.setItem(`score`, this.score)
-      helper.replaceHTML(this.elements.score, `Score: ${this.score}`)
+      this.updateFound(this.currentPokemon.id)
     } else {
       helper.replaceHTML(this.elements.output, `Too bad!`)
+    }
+    if (window.localStorage.getItem(`foundPokemons`) !== null) {
+      let foundPokemons = JSON.parse(window.localStorage.getItem(`foundPokemons`))
+      config.updateDiscovered(foundPokemons.length)
     }
   },
   countdown: function () {
@@ -88,6 +84,12 @@ const game = {
         }
       }, 1000)
     }
+  },
+  updateFound: function (pokemon) {
+    let found = window.localStorage.getItem(`foundPokemons`)
+    found = JSON.parse(found)
+    found.push(pokemon)
+    window.localStorage.setItem(`foundPokemons`, JSON.stringify(found))
   },
   render: function (pokemon) {
     this.elements.image.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id + 1}.png`
