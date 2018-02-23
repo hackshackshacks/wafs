@@ -61,12 +61,12 @@ const game = {
   validate: function () { // check if input matches pokemon name
     if (this.elements.input.value.toLowerCase() === this.currentPokemon.name) { // valid
       helper.replaceHTML(this.elements.output, 'Amazing!')
-      this.updateFound(this.currentPokemon.id)
+      this.storeFound(this.currentPokemon.id)
     } else { // invalid
       helper.replaceHTML(this.elements.output, `Too bad!`)
     }
     let foundPokemons = JSON.parse(window.localStorage.getItem(`foundPokemons`))
-    config.updateDiscovered(foundPokemons.length) // update score
+    config.renderFound(foundPokemons.length) // render score
   },
   countdown: function () { // countdown timer
     let time = this.gameTime
@@ -81,7 +81,7 @@ const game = {
       }, 1000)
     }
   },
-  updateFound: function (pokemon) { // update the foundPokemons array in local storage
+  storeFound: function (pokemon) { // update the foundPokemons array in local storage
     let found = window.localStorage.getItem(`foundPokemons`)
     found = JSON.parse(found)
     found.push(pokemon)

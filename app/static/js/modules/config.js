@@ -10,7 +10,7 @@ const config = {
       window.localStorage.setItem(`foundPokemons`, JSON.stringify([])) // create empty array if no array exists
     }
   },
-  updateDiscovered: function (amount) {
+  renderFound: function (amount) {
     this.elements.discovered.forEach((element) => {
       helper.replaceHTML(element, `Discovered: ${amount}/${620}`) // update all 'discovered pokemons' elements
     })
