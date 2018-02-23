@@ -52,6 +52,8 @@ This app uses the [pokeApi](https://pokeapi.co/) API. The API isn't as fast as I
 - Get score from amount of discovered Pokemon instead of seperate variable.
 - More meaningful details on the Pokemon detail page.
 - Possibly get random Pokemons in the game based on the undiscovered Pokemons.
+- Filter the Pokedex based on discovered Pokemons.
+- Disable searching for undiscovered Pokemons.
 
 ## Sources
 - [Routie](http://projects.jga.me/routie/)
