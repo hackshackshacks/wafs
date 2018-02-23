@@ -15,8 +15,8 @@ import api from './modules/api.js'
     init: function () {
       routes.init()
       config.init()
-      this.handleEvents()
-      this.getPokemons()
+      this.handleEvents() // add listeners
+      this.getPokemons() // collect active generation
       if (!window.localStorage.getItem('foundPokemons')) {
         window.localStorage.setItem('foundPokemons', config.foundPokemons)
       }
@@ -29,6 +29,7 @@ import api from './modules/api.js'
         })
       })
       this.elements.radioBtns.forEach((btn, i) => {
+        /* collect pokemons based on active radio button */
         btn.addEventListener('change', () => {
           if (this.elements.radioBtns[i].checked && config.activeGen !== api.gen[i]) {
             config.activeGen = api.gen[i]
@@ -45,7 +46,7 @@ import api from './modules/api.js'
       pokedex.elements.loader.classList.remove('hidden')
       helper.replaceHTML(game.elements.newGame, `Catching pokemons..`)
       game.elements.newGame.disabled = true
-      if (!window.localStorage.getItem(`pokemons${config.activeGen[2]}`)) { // get local data if available
+      if (!window.localStorage.getItem(`pokemons${config.activeGen[2]}`)) { // if no local data get from api
         api.loadGeneration(config.activeGen)
         .then((result) => {
           game.elements.newGame.disabled = false
@@ -56,7 +57,7 @@ import api from './modules/api.js'
           game.elements.load.classList.add('hidden')
           pokedex.elements.loader.classList.add('hidden')
         })
-      } else {
+      } else { // get local data if available
         helper.replaceHTML(game.elements.newGame, `New game`)
         game.elements.newGame.disabled = false
         game.elements.load.classList.add('hidden')
@@ -65,7 +66,7 @@ import api from './modules/api.js'
       }
     },
     storePokemons: function (items, local) {
-      if (!local) { // use local data
+      if (!local) { // store data to local
         window.localStorage.setItem(`pokemons${config.activeGen[2]}`, JSON.stringify(items))
       }
       config.pokemons = items.map((item, i) => {

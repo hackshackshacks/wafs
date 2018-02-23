@@ -3,15 +3,15 @@ import config from './config.js'
 
 const game = {
   elements: {
-    load: document.querySelector('#gameLoader'),
-    image: document.querySelector('#img'),
+    load: document.querySelector('#gameLoader'), // game loader element
+    image: document.querySelector('#img'), // image element
     output: document.querySelector('#counter'), // counter output element
     input: document.querySelector('#guess'), // user guess input element
-    submit: document.querySelector('#submitGuess'),
+    submit: document.querySelector('#submitGuess'), // submit guess button
     message: document.querySelector('#message'), // win or lose message element
-    name: document.querySelector('#pokemonName'),
-    newGame: document.querySelector('#newGame'),
-    wrapper: document.querySelector('.game')
+    name: document.querySelector('#pokemonName'), // pokemon name element
+    newGame: document.querySelector('#newGame'), // new game button
+    wrapper: document.querySelector('.game') // wrapper element
   },
   init: function () {
     this.handleEvents()
@@ -30,27 +30,27 @@ const game = {
       this.start()
     })
   },
-  start: function () {
+  start: function () { // start the game
     this.toggleState('ingame')
     let rnd = helper.randomize(config.activeGen[0], config.activeGen[1])
-    this.currentPokemon = config.pokemons[rnd]
+    this.currentPokemon = config.pokemons[rnd] // set currentpokemon as random from config.pokemons array
     this.countdown()
     this.startSound.play()
-    this.elements.input.value = ''
+    this.elements.input.value = '' // reset input field
     this.render(this.currentPokemon)
   },
-  end: function () {
+  end: function () { // end the game
     this.startSound.pause()
     this.startSound.currentTime = 0
     this.endSound.play()
     this.toggleState()
     // reset timer
-    clearInterval(this.count)
+    clearInterval(this.count) // stop counting
     this.count = false
     helper.replaceHTML(game.elements.output, game.gameTime)
     this.validate()
   },
-  toggleState: function (state) {
+  toggleState: function (state) { // add ingame class based on state in order to hide and show the elements
     if (state === 'ingame') {
       this.elements.wrapper.classList.add('ingame')
       this.elements.input.focus()
@@ -58,21 +58,19 @@ const game = {
       this.elements.wrapper.classList.remove('ingame')
     }
   },
-  validate: function () {
-    if (this.elements.input.value.toLowerCase() === this.currentPokemon.name) { // validate input value and update score
+  validate: function () { // check if input matches pokemon name
+    if (this.elements.input.value.toLowerCase() === this.currentPokemon.name) { // valid
       helper.replaceHTML(this.elements.output, 'Amazing!')
       this.updateFound(this.currentPokemon.id)
-    } else {
+    } else { // invalid
       helper.replaceHTML(this.elements.output, `Too bad!`)
     }
-    if (window.localStorage.getItem(`foundPokemons`) !== null) {
-      let foundPokemons = JSON.parse(window.localStorage.getItem(`foundPokemons`))
-      config.updateDiscovered(foundPokemons.length)
-    }
+    let foundPokemons = JSON.parse(window.localStorage.getItem(`foundPokemons`))
+    config.updateDiscovered(foundPokemons.length) // update score
   },
-  countdown: function () {
+  countdown: function () { // countdown timer
     let time = this.gameTime
-    helper.replaceHTML(this.elements.output, time)
+    helper.replaceHTML(this.elements.output, time) // render time
     if (!this.count) {
       this.count = setInterval(() => { // set variable to setinterval function
         time--
@@ -83,13 +81,13 @@ const game = {
       }, 1000)
     }
   },
-  updateFound: function (pokemon) {
+  updateFound: function (pokemon) { // update the foundPokemons array in local storage
     let found = window.localStorage.getItem(`foundPokemons`)
     found = JSON.parse(found)
     found.push(pokemon)
     window.localStorage.setItem(`foundPokemons`, JSON.stringify(found))
   },
-  render: function (pokemon) {
+  render: function (pokemon) { // render pokemon image and name
     this.elements.image.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id + 1}.png`
     helper.replaceHTML(this.elements.name, `It's ${helper.capitalizeFirst(this.currentPokemon.name)}`)
   }

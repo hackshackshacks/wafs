@@ -10,15 +10,15 @@ const detail = {
     this.loadPokemon(id)
     this.pokemon = {}
   },
-  loadPokemon: function (id) {
+  loadPokemon: function (id) { // Load pokemon data
     this.elements.loader.classList.remove('hidden')
     while (this.elements.wrapper.firstChild) {
-      this.elements.wrapper.removeChild(this.elements.wrapper.firstChild) // empty section
+      this.elements.wrapper.removeChild(this.elements.wrapper.firstChild) // Empty section
     }
-    if (window.localStorage.getItem(`pokemon${id}`)) { // get local data if available
+    if (window.localStorage.getItem(`pokemon${id}`)) { // Get local data if available
       this.elements.loader.classList.add('hidden')
       this.render(JSON.parse(window.localStorage.getItem(`pokemon${id}`)))
-    } else {
+    } else { // Get api data
       api.loadSingle(id).then((result) => {
         this.elements.loader.classList.add('hidden')
         let res = this.handleData(JSON.parse(result))
@@ -45,7 +45,7 @@ const detail = {
     })
     return pokemon
   },
-  render: function (data) {
+  render: function (data) { // create template and insert into html
     let types = ''
     data.types.forEach((type) => {
       types += `<div class="type ${type}">${type}</div>`

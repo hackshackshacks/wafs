@@ -9,12 +9,11 @@ const pokedex = {
     submit: document.querySelector('#submitSearch')
   },
   init: function () {
-    this.startAmount = 5
     this.offset = 0
     this.handleEvents()
-    if (config.pokemons) {
+    if (config.pokemons) { // render if pokemons are availabe
       this.render(config.pokemons)
-    } else {
+    } else { // render until data is available
       this.update = setInterval(() => {
         this.render(config.pokemons)
       }, 1000)
@@ -28,13 +27,13 @@ const pokedex = {
   render: function (arr) {
     helper.emptyElement(this.elements.list)
     if (arr.length > 0) {
-      clearInterval(this.update)
+      clearInterval(this.update) // remove update
       let found = []
       if (window.localStorage.getItem(`foundPokemons`) !== null) {
         found = JSON.parse(window.localStorage.getItem('foundPokemons'))
       }
-      let list = arr.map((pokemon, i) => {
-        if (helper.checkArray(found, pokemon.id)) {
+      let list = arr.map((pokemon, i) => { // Add list item for each pokemon
+        if (helper.checkArray(found, pokemon.id)) { // create list item for discovered pokemon
           return `
           <li class="pokemon" style="animation-delay: calc(50ms * ${i})">
             <a href="#pokedex/${pokemon.id + 1}">
@@ -43,7 +42,7 @@ const pokedex = {
             </a>
           </li>
           `
-        } else {
+        } else { // create list item for undiscovered pokemon
           return `
           <li class="pokemon pokehidden" style="animation-delay: calc(50ms * ${i})">
             <a>
@@ -53,20 +52,19 @@ const pokedex = {
           </li>
           `
         }
-      }).join('')
+      }).join('') // remove spaces
       this.elements.list.insertAdjacentHTML('beforeend', list)
-      this.currentAmount += this.startAmount
-    } else {
+    } else { // load nothing found image
       this.elements.list.insertAdjacentHTML('beforeend', '<figure><img src="static/assets/images/squirtlecrying.gif"><figcaption>No results. Try another generation</figcaption></figure>')
     }
   },
   search: function (input) {
-    let results = config.pokemons.filter((pokemon) => {
+    let results = config.pokemons.filter((pokemon) => { // filter pokemon based on input value
       if (pokemon.name.includes(input)) {
         return pokemon
       }
     })
-    this.render(results)
+    this.render(results) // render search results
   }
 }
 export default pokedex

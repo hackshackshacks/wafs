@@ -6,7 +6,7 @@ const routes = {
   elements: {
     body: document.querySelector('body')
   },
-  init: function () {
+  init: function () { // create routes
     routie({
       'game': () => {
         game.init()
@@ -17,7 +17,7 @@ const routes = {
         this.toggle()
       },
       'pokedex/:pokemon?': (i) => {
-        detail.init(Number(i))
+        detail.init(Number(i)) // initialize detail with parameter of pokemon id
         this.toggle(i)
       },
       'error': () => {
@@ -31,7 +31,7 @@ const routes = {
       }
     })
   },
-  toggle: function (i) {
+  toggle: function (i) { // toggle the active page
     this.elements.body.className = ''
     this.elements.body.classList.add(window.location.hash.replace('#', ''))
   }
